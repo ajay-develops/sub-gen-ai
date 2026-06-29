@@ -1,3 +1,5 @@
+import { landingScreenshots } from "@/lib/landing-screenshots";
+
 export const APP_NAME = "SubGenAI";
 
 export const APP_DESCRIPTION =
@@ -28,3 +30,7 @@ export const GEMINI_MODEL_ID = "gemini-2.5-flash";
 export const API_KEY_DEMO_VIDEO_EMBED_URL =
   "https://www.youtube.com/embed/8YWztaMw32o?autoplay=1";
 export const API_KEY_DEMO_VIDEO_THUMBNAIL = "/gemini-api-key-thumbnail.png";
+
+export const LANDING_HERO_VIDEO_EMBED_URL =
+  "https://www.youtube.com/embed/zEO_RFjtnV0?autoplay=1";
+export const LANDING_HERO_VIDEO_THUMBNAIL = landingScreenshots.dashboardScreen;

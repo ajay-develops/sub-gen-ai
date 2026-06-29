@@ -4,8 +4,8 @@ import { UserButton } from "@clerk/nextjs";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { BrandLogo } from "@/components/brand-logo";
 import { appNav } from "@/lib/app-config";
-import { APP_NAME } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
 export function AppHeader() {
@@ -35,10 +35,7 @@ export function AppHeader() {
             href="/app"
             className="flex items-center gap-2 text-sm font-semibold text-foreground"
           >
-            <span className="flex size-7 items-center justify-center rounded-lg bg-primary text-xs font-bold text-primary-foreground">
-              S
-            </span>
-            {APP_NAME}
+            <BrandLogo nameClassName="text-sm font-semibold" />
           </Link>
           <nav className="flex items-center gap-1">
             {appNav.map((item) => {

@@ -1,4 +1,5 @@
 import { auth } from "@clerk/nextjs/server";
+import { ApiKeyDemoVideo } from "@/components/api-key-demo-video";
 import { ApiKeyForm } from "@/components/api-key-form";
 import { PageHeader } from "@/components/layout/page-header";
 import { BlurFade } from "@/components/ui/blur-fade";
@@ -36,7 +37,8 @@ export default async function SettingsPage() {
           gradientOpacity={0.5}
         >
           <Card className="border-0 bg-transparent shadow-none">
-            <CardContent className="pt-6">
+            <CardContent className="space-y-6 pt-6">
+              <ApiKeyDemoVideo />
               <ApiKeyForm initialHasKey={initialHasKey} />
             </CardContent>
           </Card>
