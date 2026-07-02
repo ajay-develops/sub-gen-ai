@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Inter, Geist_Mono } from "next/font/google";
+import { FeaturebaseProvider } from "@/components/featurebase/featurebase-provider";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { APP_DESCRIPTION, APP_NAME } from "@/lib/constants";
@@ -40,6 +41,7 @@ export default function RootLayout({
             enableSystem={false}
             disableTransitionOnChange
           >
+            <FeaturebaseProvider />
             {children}
             <Toaster richColors closeButton />
           </ThemeProvider>
