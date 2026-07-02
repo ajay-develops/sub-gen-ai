@@ -29,7 +29,7 @@ function HeroPill() {
 }
 
 function HeroTitles() {
-  const words = ["Accurate", "SRT", "subtitles", "from", "video"];
+  const words = ["Super-fast", "SRT", "subtitles", "from", "video"];
 
   return (
     <div className="flex w-full max-w-3xl flex-col space-y-4 overflow-hidden pt-8">

@@ -56,7 +56,7 @@ export function LandingSolution() {
     <Section
       title="Solution"
       subtitle="Subtitles built for creators who care about speed and privacy"
-      description="Generic cloud upload tools aren't enough. SubGenAI is purpose-built for accurate SRT generation with browser-side processing and your own Gemini key."
+      description="Generic cloud upload tools aren't enough. SubGenAI is purpose-built for super-fast SRT generation with browser-side processing and your own Gemini key."
       className="bg-neutral-100 dark:bg-neutral-900"
     >
       <div className="mx-auto mt-16 grid max-w-sm grid-cols-1 gap-6 text-gray-500 md:max-w-3xl md:grid-cols-2 md:grid-rows-3 xl:max-w-4xl xl:auto-rows-fr xl:grid-cols-3">
