@@ -11,6 +11,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ShimmerButton } from "@/components/ui/shimmer-button";
+import { AnalyticsEvents, captureEvent } from "@/lib/analytics/events";
 import { cn } from "@/lib/utils";
 
 type ApiKeyFormProps = {
@@ -55,6 +56,9 @@ export function ApiKeyForm({
 
       setApiKey("");
       setStatus("configured");
+      captureEvent(AnalyticsEvents.API_KEY_SAVED, {
+        context: isOnboarding ? "onboarding" : "settings",
+      });
 
       if (isOnboarding) {
         toast.success("You're all set! Upload a video to get started.");
@@ -87,6 +91,7 @@ export function ApiKeyForm({
       }
 
       setStatus("missing");
+      captureEvent(AnalyticsEvents.API_KEY_REMOVED);
       toast.success("API key removed.");
     } catch (removeError) {
       toast.error(

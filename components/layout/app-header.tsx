@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { BrandLogo } from "@/components/brand-logo";
+import { FeedbackTriggerButton } from "@/components/feedback/feedback-trigger-button";
 import { appNav } from "@/lib/app-config";
 import { cn } from "@/lib/utils";
 
@@ -61,7 +62,10 @@ export function AppHeader() {
             })}
           </nav>
         </div>
-        <UserButton />
+        <div className="flex items-center gap-3">
+          <FeedbackTriggerButton />
+          <UserButton />
+        </div>
       </div>
     </header>
   );

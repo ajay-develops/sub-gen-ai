@@ -4,6 +4,7 @@ import { Copy, RotateCcw } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { ApiKeyOnboardingCard } from "@/components/api-key-onboarding-card";
+import { useFeedback } from "@/components/feedback/feedback-provider";
 import { DownloadSrtButton } from "@/components/download-srt-button";
 import { PageHeader } from "@/components/layout/page-header";
 import {
@@ -21,6 +22,11 @@ import { Button } from "@/components/ui/button";
 import { validateVideoFile, VideoUploader } from "@/components/video-uploader";
 import { useFfmpeg } from "@/hooks/use-ffmpeg";
 import { useTranscription } from "@/hooks/use-transcription";
+import {
+  AnalyticsEvents,
+  captureEvent,
+  getFileSizeBucket,
+} from "@/lib/analytics/events";
 import { formatBytes } from "@/lib/utils";
 import { isLikelyValidSrt, normalizeSrt } from "@/lib/srt/validator";
 import type { SubtitleLanguage } from "@/lib/subtitle-languages";
@@ -41,6 +47,7 @@ export function SubtitleGenerator({
     DEFAULT_SUBTITLE_LANGUAGE,
   );
   const hasShownCompleteToast = useRef(false);
+  const { promptAfterDownload } = useFeedback();
 
   const {
     isLoading: isFfmpegLoading,
@@ -58,6 +65,7 @@ export function SubtitleGenerator({
   } = useTranscription();
 
   const resetWorkflow = useCallback(() => {
+    captureEvent(AnalyticsEvents.WORKFLOW_RESET);
     setStep("idle");
     setSelectedFile(null);
     setWarning(null);
@@ -78,6 +86,12 @@ export function SubtitleGenerator({
       setSelectedFile(file);
       resetTranscription();
 
+      captureEvent(AnalyticsEvents.VIDEO_UPLOAD_STARTED, {
+        file_extension: file.name.split(".").pop()?.toLowerCase() ?? "unknown",
+        file_size_bucket: getFileSizeBucket(file.size),
+        language: subtitleLanguage,
+      });
+
       try {
         setStep("loading-ffmpeg");
         const audioBlob = await extractAudio(file);
@@ -89,6 +103,11 @@ export function SubtitleGenerator({
         }
 
         setStep("transcribing");
+        captureEvent(AnalyticsEvents.TRANSCRIPTION_STARTED, {
+          language: subtitleLanguage,
+          audio_size_kb: Math.round(audioBlob.size / 1024),
+        });
+
         const result = await transcribe(audioBlob, {
           filename: file.name,
           language: subtitleLanguage,
@@ -102,11 +121,19 @@ export function SubtitleGenerator({
         }
 
         setStep("complete");
+        captureEvent(AnalyticsEvents.TRANSCRIPTION_COMPLETED, {
+          language: subtitleLanguage,
+          has_srt_warning: !isLikelyValidSrt(normalized),
+        });
       } catch (processError) {
         const message =
           processError instanceof Error
             ? processError.message
             : "Something went wrong while processing your video";
+        captureEvent(AnalyticsEvents.TRANSCRIPTION_FAILED, {
+          language: subtitleLanguage,
+          error_message: message,
+        });
         setError(message);
         setStep("error");
       }
@@ -217,7 +244,10 @@ export function SubtitleGenerator({
           <DownloadSrtButton
             content={srtText}
             filename={selectedFile.name}
-            onDownloadComplete={() => setHasDownloaded(true)}
+            onDownloadComplete={() => {
+              setHasDownloaded(true);
+              promptAfterDownload();
+            }}
           />
         )}
 
@@ -227,6 +257,7 @@ export function SubtitleGenerator({
             variant="outline"
             onClick={async () => {
               await navigator.clipboard.writeText(srtText);
+              captureEvent(AnalyticsEvents.SRT_COPIED);
               toast.success("SRT copied to clipboard");
             }}
             className="h-10 gap-2 rounded-full px-5"

@@ -3,6 +3,7 @@
 import { Download } from "lucide-react";
 import { toast } from "sonner";
 import { ShimmerButton } from "@/components/ui/shimmer-button";
+import { AnalyticsEvents, captureEvent } from "@/lib/analytics/events";
 import { normalizeSrt } from "@/lib/srt/validator";
 
 type DownloadSrtButtonProps = {
@@ -29,6 +30,9 @@ export function DownloadSrtButton({
     anchor.download = `${baseName}.srt`;
     anchor.click();
     URL.revokeObjectURL(url);
+    captureEvent(AnalyticsEvents.SRT_DOWNLOADED, {
+      cue_count: normalized.split(/\n\n+/).filter(Boolean).length,
+    });
     toast.success("Download complete. Your SRT file is ready to use.");
     onDownloadComplete?.();
   }
